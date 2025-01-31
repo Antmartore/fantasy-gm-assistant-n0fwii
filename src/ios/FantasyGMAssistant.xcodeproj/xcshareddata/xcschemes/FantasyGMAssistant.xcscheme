@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1500"
+   version = "1.7">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FantasyGMAssistant"
+               BuildableName = "FantasyGMAssistant.app"
+               BlueprintName = "FantasyGMAssistant"
+               ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+      <BuildSettings>
+         <ENABLE_PREVIEWS>YES</ENABLE_PREVIEWS>
+         <SWIFT_ACTIVE_COMPILATION_CONDITIONS>DEBUG STAGING RELEASE</SWIFT_ACTIVE_COMPILATION_CONDITIONS>
+         <ONLY_ACTIVE_ARCH>YES</ONLY_ACTIVE_ARCH>
+         <ENABLE_TESTING_SEARCH_PATHS>YES</ENABLE_TESTING_SEARCH_PATHS>
+         <SWIFT_OPTIMIZATION_LEVEL>-Onone</SWIFT_OPTIMIZATION_LEVEL>
+         <ENABLE_STRICT_OBJC_MSGSEND>YES</ENABLE_STRICT_OBJC_MSGSEND>
+         <CLANG_WARN_DOCUMENTATION_COMMENTS>YES</CLANG_WARN_DOCUMENTATION_COMMENTS>
+      </BuildSettings>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      enableAddressSanitizer = "YES"
+      enableThreadSanitizer = "NO"
+      systemAttachmentLifetime = "keepAlways">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FantasyGMAssistantTests"
+               BuildableName = "FantasyGMAssistantTests.xctest"
+               BlueprintName = "FantasyGMAssistantTests"
+               ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FantasyGMAssistantUITests"
+               BuildableName = "FantasyGMAssistantUITests.xctest"
+               BlueprintName = "FantasyGMAssistantUITests"
+               ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "FantasyGMAssistant"
+            BuildableName = "FantasyGMAssistant.app"
+            BlueprintName = "FantasyGMAssistant"
+            ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "ENABLE_TESTING"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "TEST_TARGET_NAME"
+            value = "FantasyGMAssistant"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "TESTING_ENVIRONMENT"
+            value = "CI"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DISABLE_ANIMATIONS"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "FantasyGMAssistant"
+            BuildableName = "FantasyGMAssistant.app"
+            BlueprintName = "FantasyGMAssistant"
+            ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "FantasyGMAssistant"
+            BuildableName = "FantasyGMAssistant.app"
+            BlueprintName = "FantasyGMAssistant"
+            ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "OS_ACTIVITY_MODE"
+            value = "disable"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "ENABLE_LOGGING"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "ENABLE_DEBUG_INFO"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "ENABLE_MEMORY_LOGGING"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES"
+      enableGPUFrameCaptureMode = "metal"
+      enableGPUValidationMode = "1"
+      allowLocationSimulation = "NO">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "FantasyGMAssistant"
+            BuildableName = "FantasyGMAssistant.app"
+            BlueprintName = "FantasyGMAssistant"
+            ReferencedContainer = "container:FantasyGMAssistant.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+      <BuildSettings>
+         <CLANG_ANALYZER_NONNULL>YES</CLANG_ANALYZER_NONNULL>
+         <CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION>YES_AGGRESSIVE</CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION>
+         <CLANG_ENABLE_MODULES>YES</CLANG_ENABLE_MODULES>
+         <CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING>YES</CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING>
+         <CLANG_WARN_DOCUMENTATION_COMMENTS>YES</CLANG_WARN_DOCUMENTATION_COMMENTS>
+         <CLANG_WARN_INFINITE_RECURSION>YES</CLANG_WARN_INFINITE_RECURSION>
+         <CLANG_WARN_SUSPICIOUS_MOVE>YES</CLANG_WARN_SUSPICIOUS_MOVE>
+         <CLANG_WARN_UNREACHABLE_CODE>YES</CLANG_WARN_UNREACHABLE_CODE>
+      </BuildSettings>
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES"
+      customArchiveName = "FantasyGMAssistant-${CURRENT_PROJECT_VERSION}">
+      <BuildSettings>
+         <ENABLE_BITCODE>NO</ENABLE_BITCODE>
+         <ENABLE_TESTABILITY>NO</ENABLE_TESTABILITY>
+         <VALIDATE_PRODUCT>YES</VALIDATE_PRODUCT>
+      </BuildSettings>
+   </ArchiveAction>
+</Scheme>
