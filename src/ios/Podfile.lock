@@ -1,0 +1,118 @@
+PODS:
+  - React-Core (0.72.0):
+    - React-cxxreact
+    - React-jsi
+    - React-callinvoker
+    - React-runtimeexecutor
+    - React-perflogger
+    - React-jsiexecutor
+    - glog (= 0.3.5)
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core/Default (= 0.72.0)
+    - React-Core/DevSupport (= 0.72.0)
+    - React-Core/RCTWebSocket (= 0.72.0)
+    - React-cxxreact (= 0.72.0)
+    - React-jsi (= 0.72.0)
+    - React-jsiexecutor (= 0.72.0)
+    - React-perflogger (= 0.72.0)
+    - Yoga
+  - React-cxxreact (0.72.0):
+    - boost (= 1.76.0)
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2021.07.22.00)
+    - React-callinvoker (= 0.72.0)
+    - React-jsi (= 0.72.0)
+    - React-jsinspector (= 0.72.0)
+    - React-logger (= 0.72.0)
+    - React-perflogger (= 0.72.0)
+    - React-runtimeexecutor (= 0.72.0)
+  - React-jsi (0.72.0):
+    - boost (= 1.76.0)
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2021.07.22.00)
+  - React-jsiexecutor (0.72.0):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2021.07.22.00)
+    - React-cxxreact (= 0.72.0)
+    - React-jsi (= 0.72.0)
+    - React-perflogger (= 0.72.0)
+  - React-callinvoker (0.72.0)
+  - React-runtimeexecutor (0.72.0):
+    - React-jsi (= 0.72.0)
+  - React-perflogger (0.72.0)
+  - Firebase/Core (10.12.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 10.12.0)
+  - Firebase/CoreOnly (10.12.0):
+    - FirebaseCore (= 10.12.0)
+  - Firebase/Auth (10.12.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 10.12.0)
+  - Firebase/Firestore (10.12.0):
+    - Firebase/CoreOnly
+    - FirebaseFirestore (~> 10.12.0)
+  - Firebase/Analytics (10.12.0):
+    - Firebase/Core
+  - FirebaseCore (10.12.0):
+    - FirebaseCoreInternal (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Logger (~> 7.8)
+  - FirebaseAuth (10.12.0):
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GTMSessionFetcher/Core (>= 2.1, < 4.0)
+  - FirebaseFirestore (10.12.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseFirestoreInternal (~> 10.0)
+  - FirebaseAnalytics (10.12.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleAppMeasurement (= 10.12.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/MethodSwizzler (~> 7.8)
+    - GoogleUtilities/Network (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (>= 2.30908.0, < 3.0.0)
+  - SwiftLint (0.52.0)
+
+DEPENDENCIES:
+  - React-Core (= 0.72.0)
+  - Firebase/Core (= 10.12.0)
+  - Firebase/Auth (= 10.12.0)
+  - Firebase/Firestore (= 10.12.0)
+  - Firebase/Analytics (= 10.12.0)
+  - SwiftLint (= 0.52.0)
+
+SPEC REPOS:
+  trunk:
+    - React-Core
+    - React-cxxreact
+    - React-jsi
+    - React-jsiexecutor
+    - React-callinvoker
+    - React-runtimeexecutor
+    - React-perflogger
+    - Firebase
+    - FirebaseCore
+    - FirebaseAuth
+    - FirebaseFirestore
+    - FirebaseAnalytics
+    - SwiftLint
+
+SPEC CHECKSUMS:
+  React-Core: 3b7e7214bf87b447eda2a2e3ba032467d18a20e3
+  Firebase: 4622d23dba1243bf0c4c30373f572360aa42d7d1
+  FirebaseCore: f86a1394906c8474a08f5c7af74fd7f8404c4d96
+  FirebaseAuth: 2e7d029977c19a377adbc97c6c556b4a8e8a6b46
+  FirebaseFirestore: 8d5773c1c6c2a8f96b4f8a9a0a46d4a1c35e8d8c
+  FirebaseAnalytics: 7d0a4f2a6071c121d312ba08e3fe61416fefb314
+  SwiftLint: 2c5f556975e5f8cd2fa2e19b3b2a1c5a9ddacc1f
+
+PODFILE CHECKSUM: 7f2d8f4b3d6a5e8d7b8f9a8f1c9b3d4e5f6a7b8c9
+
+COCOAPODS: 1.12.0
