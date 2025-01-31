@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="colorPrimary">#1A1A1A</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryLight">#333333</color>
+    <color name="colorSecondary">#00FF88</color>
+    <color name="colorSecondaryDark">#00CC6E</color>
+    <color name="colorSecondaryLight">#33FFA3</color>
+    <color name="colorAccent">#4A90E2</color>
+    <color name="colorAccentDark">#2171C7</color>
+    <color name="colorAccentLight">#7CAFEA</color>
+
+    <!-- Text Colors - Light Theme (WCAG AA compliant) -->
+    <color name="colorTextPrimary">#1A1A1A</color>
+    <color name="colorTextSecondary">#666666</color>
+    <color name="colorTextHint">#999999</color>
+    <color name="colorTextDisabled">#CCCCCC</color>
+    <color name="colorTextOnPrimary">#FFFFFF</color>
+    <color name="colorTextOnSecondary">#000000</color>
+    <color name="colorTextOnAccent">#FFFFFF</color>
+
+    <!-- Text Colors - Dark Theme (WCAG AA compliant) -->
+    <color name="colorTextPrimaryDark">#FFFFFF</color>
+    <color name="colorTextSecondaryDark">#B3B3B3</color>
+    <color name="colorTextHintDark">#808080</color>
+    <color name="colorTextDisabledDark">#4D4D4D</color>
+    <color name="colorTextOnPrimaryDark">#FFFFFF</color>
+    <color name="colorTextOnSecondaryDark">#000000</color>
+    <color name="colorTextOnAccentDark">#FFFFFF</color>
+
+    <!-- Background Colors - Light Theme -->
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorSurface">#F5F5F5</color>
+    <color name="colorSurfaceVariant">#EEEEEE</color>
+    <color name="colorBackgroundElevated">#FFFFFF</color>
+
+    <!-- Background Colors - Dark Theme -->
+    <color name="colorBackgroundDark">#121212</color>
+    <color name="colorSurfaceDark">#1E1E1E</color>
+    <color name="colorSurfaceVariantDark">#2C2C2C</color>
+    <color name="colorBackgroundElevatedDark">#242424</color>
+
+    <!-- Status Colors -->
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorSuccessDark">#3D8C40</color>
+    <color name="colorWarning">#FFC107</color>
+    <color name="colorWarningDark">#CC9A06</color>
+    <color name="colorError">#F44336</color>
+    <color name="colorErrorDark">#C3352B</color>
+    <color name="colorInfo">#2196F3</color>
+    <color name="colorInfoDark">#1976D2</color>
+
+    <!-- Interactive States -->
+    <color name="colorRipple">#1F000000</color>
+    <color name="colorRippleDark">#33FFFFFF</color>
+    <color name="colorPressed">#0D000000</color>
+    <color name="colorPressedDark">#1AFFFFFF</color>
+    <color name="colorSelected">#1A000000</color>
+    <color name="colorSelectedDark">#26FFFFFF</color>
+
+    <!-- Overlay Colors -->
+    <color name="colorScrim">#52000000</color>
+    <color name="colorScrimDark">#80000000</color>
+    <color name="colorOverlay">#1F000000</color>
+    <color name="colorOverlayDark">#33000000</color>
+
+    <!-- Divider Colors -->
+    <color name="colorDivider">#1F000000</color>
+    <color name="colorDividerDark">#1FFFFFFF</color>
+
+    <!-- Transparent -->
+    <color name="colorTransparent">#00000000</color>
+
+    <!-- Premium Feature Indicator -->
+    <color name="colorPremium">#FFD700</color>
+    <color name="colorPremiumDark">#CC9A06</color>
+
+    <!-- Sport-Specific Colors -->
+    <color name="colorNFL">#013369</color>
+    <color name="colorNBA">#C9082A</color>
+    <color name="colorMLB">#041E42</color>
+
+    <!-- Chart Colors -->
+    <color name="colorChartPrimary">#4A90E2</color>
+    <color name="colorChartSecondary">#00FF88</color>
+    <color name="colorChartTertiary">#FF6B6B</color>
+    <color name="colorChartQuaternary">#FFD93D</color>
+</resources>
