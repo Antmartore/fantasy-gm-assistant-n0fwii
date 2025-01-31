@@ -1,0 +1,19 @@
+[Binary PNG image data with the following specifications:
+
+Resolution: 144x144 pixels
+Density: xxhdpi (480dpi)
+Color depth: 32-bit
+Format: PNG
+Color profile: sRGB
+Compression: Zopfli (lossless)
+File size: < 50KB
+
+Design implementation:
+- Material Design adaptive icon with safe zone padding of 2dp
+- Primary brand color (#1A1A1A) gradient background
+- Secondary brand color (#00FF88) and accent color (#4A90E2) foreground elements
+- Material elevation with 2dp shadows
+- Follows Material Design icon grid system and keylines
+- Optimized for xxhdpi Android devices
+- Supports both standard and round launcher formats
+- Implements proper masking for adaptive icons]
