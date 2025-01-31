@@ -1,0 +1,287 @@
+# Fantasy GM Assistant Android Fastfile
+# Version: 1.0.0
+# fastlane version: 2.212.2
+
+# Import required plugins
+fastlane_require 'fastlane-plugin-firebase_app_distribution'
+fastlane_require 'fastlane-plugin-datadog'
+
+# Default platform configuration
+default_platform(:android)
+
+# Global constants
+COVERAGE_THRESHOLD = 80
+GRADUAL_ROLLOUT_PERCENTAGE = 20
+
+platform :android do
+  # Setup required before any lane execution
+  before_all do |lane, options|
+    # Verify clean git status
+    ensure_git_status_clean
+    
+    # Initialize DataDog monitoring
+    datadog_init(
+      api_key: ENV["DATADOG_API_KEY"],
+      app_key: ENV["DATADOG_APP_KEY"],
+      environment: lane
+    )
+    
+    # Verify Firebase configuration
+    validate_firebase_config
+    
+    # Setup environment-specific variables
+    case lane
+    when "development"
+      ENV["PLAY_TRACK"] = "internal"
+    when "staging"
+      ENV["PLAY_TRACK"] = "beta"
+    when "production"
+      ENV["PLAY_TRACK"] = "production"
+    end
+  end
+
+  # Build lane with security checks
+  desc "Build Android app with security validations"
+  lane :build do |options|
+    build_type = options[:build_type] || "debug"
+    version_increment = options[:version_increment] || false
+
+    # Clean build directory
+    gradle(task: "clean")
+
+    # Update version code if specified
+    if version_increment
+      increment_version_code(
+        gradle_file_path: "app/build.gradle"
+      )
+    end
+
+    # Security checks
+    gradle(
+      task: "dependencyCheckAnalyze",
+      properties: {
+        "failOnError" => true
+      }
+    )
+
+    # Build app
+    gradle(
+      task: build_type == "release" ? "bundleRelease" : "assembleDebug",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
+      }
+    )
+
+    # Verify build artifacts
+    verify_build_artifacts(build_type)
+
+    # Send build metrics to DataDog
+    datadog_event(
+      title: "Android Build Completed",
+      text: "Build type: #{build_type}, Version: #{get_version_name}",
+      alert_type: "info"
+    )
+  end
+
+  # Test lane with comprehensive checks
+  desc "Run comprehensive test suite"
+  lane :test do
+    # Unit tests with retry mechanism
+    3.times do |attempt|
+      begin
+        gradle(task: "testDebugUnitTest")
+        break
+      rescue => ex
+        raise ex if attempt == 2
+        sleep(5)
+      end
+    end
+
+    # Instrumentation tests
+    gradle(task: "connectedDebugAndroidTest")
+
+    # Generate coverage report
+    gradle(task: "createDebugCoverageReport")
+
+    # Verify coverage threshold
+    coverage = parse_coverage_report
+    if coverage < COVERAGE_THRESHOLD
+      UI.user_error!("Code coverage #{coverage}% below threshold #{COVERAGE_THRESHOLD}%")
+    end
+
+    # Static code analysis
+    gradle(task: "detekt")
+    gradle(task: "lint")
+
+    # Send test metrics to DataDog
+    datadog_metric(
+      metric: "fantasy_gm.android.test_coverage",
+      value: coverage,
+      tags: ["environment:#{ENV['ENVIRONMENT']}"]
+    )
+  end
+
+  # Firebase deployment lane
+  desc "Deploy to Firebase App Distribution"
+  lane :deploy_to_firebase do |options|
+    build_type = options[:build_type] || "debug"
+    groups = options[:groups] || "testers"
+
+    # Validate Firebase token
+    ensure_firebase_token
+
+    # Deploy to Firebase
+    firebase_app_distribution(
+      app: ENV["FIREBASE_APP_ID"],
+      groups: groups,
+      release_notes: generate_release_notes,
+      firebase_cli_token: ENV["FIREBASE_TOKEN"],
+      apk_path: lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    )
+
+    # Log deployment
+    datadog_event(
+      title: "Firebase Deployment Completed",
+      text: "Build type: #{build_type}, Groups: #{groups}",
+      alert_type: "success"
+    )
+  end
+
+  # Play Store deployment lane
+  desc "Deploy to Google Play Store"
+  lane :deploy_to_play_store do |options|
+    track = options[:track] || "internal"
+
+    # Validate Play Store credentials
+    ensure_play_store_credentials
+
+    # Upload to Play Store
+    upload_to_play_store(
+      track: track,
+      release_status: track == "production" ? "draft" : "completed",
+      aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      rollout: track == "production" ? GRADUAL_ROLLOUT_PERCENTAGE : 100,
+      version_name: get_version_name,
+      version_code: get_version_code
+    )
+
+    # Configure monitoring for production deployments
+    if track == "production"
+      setup_rollout_monitoring
+    end
+
+    # Log deployment
+    datadog_event(
+      title: "Play Store Deployment Completed",
+      text: "Track: #{track}, Version: #{get_version_name}",
+      alert_type: "success"
+    )
+  end
+
+  # Development lane
+  desc "Build and deploy for development"
+  lane :development do
+    build(
+      build_type: "debug",
+      version_increment: true
+    )
+    test
+    deploy_to_firebase(
+      build_type: "debug",
+      groups: "testers"
+    )
+  end
+
+  # Staging lane
+  desc "Build and deploy for staging"
+  lane :staging do
+    # Require tech lead approval
+    ensure_tech_lead_approval
+
+    build(
+      build_type: "release",
+      version_increment: true
+    )
+    test
+    security_scan
+    deploy_to_firebase(
+      build_type: "release",
+      groups: "qa"
+    )
+    deploy_to_play_store(track: "internal")
+  end
+
+  # Production lane
+  desc "Build and deploy for production"
+  lane :production do
+    # Require product owner approval
+    ensure_product_owner_approval
+
+    build(
+      build_type: "release",
+      version_increment: true
+    )
+    test
+    security_scan
+    quality_gate_check
+    deploy_to_play_store(track: "production")
+  end
+
+  # Error handling
+  error do |lane, exception, options|
+    # Log error to DataDog
+    datadog_event(
+      title: "Fastlane Error",
+      text: "Lane: #{lane}, Error: #{exception.message}",
+      alert_type: "error"
+    )
+
+    # Notify team
+    slack(
+      message: "Fastlane Error in #{lane}: #{exception.message}",
+      success: false,
+      slack_url: ENV["SLACK_WEBHOOK"]
+    )
+
+    # Cleanup on error
+    clean_build_artifacts
+  end
+end
+
+# Helper methods
+def validate_firebase_config
+  firebase_config = File.read("../app/google-services.json")
+  package_name = JSON.parse(firebase_config)["client"][0]["client_info"]["android_client_info"]["package_name"]
+  UI.user_error!("Firebase package name mismatch") unless package_name == "com.fantasygm.assistant"
+end
+
+def verify_build_artifacts(build_type)
+  artifact_path = build_type == "release" ? 
+    lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH] :
+    lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+  UI.user_error!("Build artifact not found") unless File.exist?(artifact_path)
+end
+
+def setup_rollout_monitoring
+  datadog_monitor(
+    name: "Android Production Rollout",
+    query: "avg(last_5m):sum:fantasy_gm.android.crash_free_users{environment:production} < 99",
+    message: "Crash-free users below threshold during rollout",
+    escalation_message: "Critical: Production rollout showing high crash rate"
+  )
+end
+
+def generate_release_notes
+  # Get git commits since last tag
+  changes = changelog_from_git_commits(
+    merge_commit_filtering: "exclude_merges",
+    pretty: "- %s"
+  )
+  "Build: #{get_version_name}\n\nChanges:\n#{changes}"
+end
