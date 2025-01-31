@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme -->
+    <style name="Theme.FantasyGMAssistant" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorTextOnPrimary</item>
+
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryDark</item>
+        <item name="colorOnSecondary">@color/colorTextOnSecondary</item>
+
+        <!-- Accent colors -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnAccent">@color/colorTextOnAccent</item>
+
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorTextPrimary</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorTextPrimary</item>
+        <item name="colorSurfaceVariant">@color/colorSurfaceVariant</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/colorSurface</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+
+        <!-- Interactive states -->
+        <item name="colorControlHighlight">@color/colorRipple</item>
+        <item name="colorControlActivated">@color/colorSecondary</item>
+        <item name="colorControlNormal">@color/colorTextSecondary</item>
+        <item name="android:colorPressedHighlight">@color/colorPressed</item>
+        <item name="android:colorLongPressedHighlight">@color/colorSelected</item>
+        <item name="android:colorFocusedHighlight">@color/colorSelected</item>
+
+        <!-- Typography -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.FantasyGM.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.FantasyGM.Headline2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.FantasyGM.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.FantasyGM.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.FantasyGM.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.FantasyGM.Button</item>
+
+        <!-- Widget styles -->
+        <item name="materialButtonStyle">@style/Widget.FantasyGM.Button.Primary</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.FantasyGM.Button.Secondary</item>
+        <item name="materialCardViewStyle">@style/Widget.FantasyGM.Card</item>
+        <item name="textInputStyle">@style/Widget.FantasyGM.Input</item>
+        <item name="toolbarStyle">@style/Widget.FantasyGM.Toolbar</item>
+        <item name="bottomNavigationStyle">@style/Widget.FantasyGM.BottomNavigation</item>
+
+        <!-- Accessibility -->
+        <item name="android:minTouchTargetSize">48dp</item>
+        <item name="android:selectableItemBackground">?attr/colorControlHighlight</item>
+        <item name="android:selectableItemBackgroundBorderless">?attr/colorControlHighlight</item>
+
+        <!-- Window configurations -->
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+
+        <!-- Elevation overlays -->
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">@color/colorScrim</item>
+
+        <!-- Dialog attributes -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.MaterialComponents.BottomSheetDialog</item>
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.MaterialComponents.TimePicker</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
+
+        <!-- Shape appearance -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MaterialComponents.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MaterialComponents.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MaterialComponents.LargeComponent</item>
+    </style>
+
+</resources>
