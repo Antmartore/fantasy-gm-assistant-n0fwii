@@ -1,0 +1,85 @@
+FANTASY SPORTS GM ASSISTANT PROPRIETARY LICENSE
+Version 1.0.0
+Effective Date: 2024
+
+Copyright (c) 2024 Fantasy Sports GM Assistant
+All Rights Reserved.
+
+PROPRIETARY AND CONFIDENTIAL
+
+This software, known as "Fantasy Sports GM Assistant" including all its components, source code, documentation, artificial intelligence/machine learning models, algorithms, and associated materials (collectively, the "Software") is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties.
+
+1. OWNERSHIP AND CONFIDENTIALITY
+
+All title, ownership rights, and intellectual property rights in and to the Software, including but not limited to:
+a) Artificial Intelligence and Machine Learning components
+   - Training methodologies
+   - Model architectures
+   - Prediction algorithms
+   - Performance optimizations
+b) Integration configurations and specifications
+   - API authentication methods
+   - Data transformation procedures
+   - Integration architectures
+   - Service configurations
+c) User data handling procedures
+   - Collection methods
+   - Storage protocols
+   - Processing procedures
+   - Security measures
+d) Business logic and algorithms
+   - Fantasy sports algorithms
+   - Scoring systems
+   - Prediction models
+   - Analysis methods
+
+remain the exclusive property of Fantasy Sports GM Assistant and its licensors.
+
+2. LICENSE RESTRICTIONS
+
+This Software is PROPRIETARY and CONFIDENTIAL. No part of this Software may be:
+a) Used commercially without explicit written permission
+b) Copied or redistributed in any form
+c) Modified, reverse engineered, decompiled, or disassembled
+d) Sublicensed, rented, leased, or transferred
+e) Used to create derivative works
+
+3. DATA PROTECTION AND COMPLIANCE
+
+This Software implements and requires adherence to:
+a) General Data Protection Regulation (GDPR)
+b) California Consumer Privacy Act (CCPA)
+c) Children's Online Privacy Protection Act (COPPA)
+d) All applicable data protection laws in operating jurisdictions
+
+4. THIRD-PARTY INTEGRATIONS
+
+Usage of this Software with third-party services including but not limited to ESPN, Sleeper, and Sportradar APIs must comply with respective service terms and conditions. Users must obtain necessary permissions and credentials for such integrations.
+
+5. WARRANTY DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. FANTASY SPORTS GM ASSISTANT SPECIFICALLY DISCLAIMS ALL WARRANTIES AND CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+6. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL FANTASY SPORTS GM ASSISTANT BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE.
+
+7. TERMINATION
+
+This license is effective until terminated. Your rights under this license will terminate automatically without notice if you fail to comply with any term(s) of this license.
+
+8. GOVERNING LAW
+
+This license shall be governed by and construed in accordance with the laws of the United States. Any disputes shall be subject to the exclusive jurisdiction of the courts in the United States.
+
+9. TRADEMARK NOTICE
+
+Fantasy Sports GM Assistant™ and its logo are trademarks of Fantasy Sports GM Assistant. All rights reserved.
+
+For licensing inquiries or permissions, contact:
+[Contact Information]
+
+ACKNOWLEDGMENT:
+BY USING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND CONDITIONS.
+
+END OF LICENSE
