@@ -1,0 +1,83 @@
+# Xcode
+xcuserdata/
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Build generated
+build/
+DerivedData/
+*.generated.swift
+
+# Dependencies
+Pods/
+Carthage/
+.build/
+!Podfile.lock
+
+# Sensitive Configuration Files
+GoogleService-Info*.plist
+firebase_config*.json
+*.mobileprovision
+*.cer
+*.p12
+*.key
+.env.*
+secrets.xcconfig
+
+# IDE
+.idea/
+
+# System files
+.DS_Store
+*.swp
+*~
+*.lock
+!Podfile.lock
+
+# Logs
+*.log
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Coverage
+*.gcda
+*.gcno
+*.profraw
+
+# App Distribution
+*.ipa
+*.app.dSYM.zip
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+*.xcconfig
+!Debug.xcconfig
+!Release.xcconfig
+
+# Temporary files
+*.tmp
+*.temp
