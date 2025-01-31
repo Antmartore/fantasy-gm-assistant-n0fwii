@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Dark theme variant of the Fantasy GM Assistant theme -->
+    <style name="Theme.FantasyGMAssistant" parent="Theme.MaterialComponents.DayNight">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryLight</item>
+        <item name="colorOnPrimary">@color/colorTextOnPrimaryDark</item>
+
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/colorSecondaryDark</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryLight</item>
+        <item name="colorOnSecondary">@color/colorTextOnSecondaryDark</item>
+
+        <!-- Accent colors -->
+        <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="colorOnAccent">@color/colorTextOnAccentDark</item>
+
+        <!-- Background colors -->
+        <item name="android:windowBackground">@color/colorBackgroundDark</item>
+        <item name="colorSurface">@color/colorSurfaceDark</item>
+        <item name="colorOnSurface">@color/colorTextPrimaryDark</item>
+        <item name="colorOnBackground">@color/colorTextPrimaryDark</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@color/colorBackgroundDark</item>
+        <item name="android:navigationBarColor">@color/colorBackgroundDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+
+        <!-- Interactive states -->
+        <item name="colorControlHighlight">@color/colorRippleDark</item>
+        <item name="colorControlActivated">@color/colorSelectedDark</item>
+        <item name="android:colorControlNormal">@color/colorTextSecondaryDark</item>
+
+        <!-- Typography -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.FantasyGM.Headline1.Dark</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.FantasyGM.Headline2.Dark</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.FantasyGM.Body1.Dark</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.FantasyGM.Body2.Dark</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.FantasyGM.Caption.Dark</item>
+        <item name="textAppearanceButton">@style/TextAppearance.FantasyGM.Button.Dark</item>
+
+        <!-- Widget styles -->
+        <item name="materialButtonStyle">@style/Widget.FantasyGM.Button.Primary.Dark</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.FantasyGM.Button.Secondary.Dark</item>
+        <item name="materialCardViewStyle">@style/Widget.FantasyGM.Card.Dark</item>
+        <item name="textInputStyle">@style/Widget.FantasyGM.Input.Dark</item>
+        <item name="toolbarStyle">@style/Widget.FantasyGM.Toolbar.Dark</item>
+        <item name="bottomNavigationStyle">@style/Widget.FantasyGM.BottomNavigation.Dark</item>
+
+        <!-- Dividers -->
+        <item name="dividerColor">@color/colorDividerDark</item>
+        <item name="android:listDivider">@color/colorDividerDark</item>
+
+        <!-- Premium feature indicator -->
+        <item name="colorPremium">@color/colorPremiumDark</item>
+
+        <!-- Status colors -->
+        <item name="colorSuccess">@color/colorSuccessDark</item>
+        <item name="colorWarning">@color/colorWarningDark</item>
+        <item name="colorError">@color/colorErrorDark</item>
+        <item name="colorInfo">@color/colorInfoDark</item>
+
+        <!-- Overlay colors -->
+        <item name="scrimBackground">@color/colorScrimDark</item>
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">@color/colorOverlayDark</item>
+    </style>
+</resources>
