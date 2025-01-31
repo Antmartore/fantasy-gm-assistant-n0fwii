@@ -1,0 +1,130 @@
+# Python bytecode and cache
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments and env files
+env/
+venv/
+.env
+.venv
+ENV/
+.env.*
+!.env.example
+.python-version
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Testing and coverage
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+test-reports/
+
+# Logs and temporary files
+logs/
+*.log
+log/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.bak
+*.tmp
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.dump
+
+# AWS and credentials
+.aws/
+*.pem
+aws.config
+credentials
+.elasticbeanstalk/
+
+# FastAPI specific
+.fastapi-cache/
+static/uploads/
+media/
+uploads/
+
+# Poetry and dependencies
+poetry.lock
+dist/
+build/
+
+# Alembic migrations
+alembic.ini
+versions/__pycache__/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Local development
+local_settings.py
+settings.local.py
+*.local.py
+
+# Secrets and keys
+*.key
+*.pem
+*.cert
+*.crt
+*.csr
+*.p12
+*.pfx
+secrets/
+
+# Generated documentation
+docs/_build/
+site/
+
+# Temporary and cache directories
+tmp/
+temp/
+.temp/
+.tmp/
