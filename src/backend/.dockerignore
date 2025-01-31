@@ -1,0 +1,44 @@
+**/__pycache__/
+**/*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Version control
+.git/
+.gitignore
+
+# Environment and secrets
+.env*
+*.key
+*.pem
+
+# CI/CD configurations
+.github/
+jenkins/
+circleci/
+
+# Testing and coverage
+tests/
+htmlcov/
+.coverage
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs and documentation
+*.log
+*.md
+
+# Development configurations
+.python-version
+docker-compose*.yml
+.dockerignore
+
+# Exceptions - files required for build
+!requirements/*.txt
+!pyproject.toml
+!poetry.lock
+!alembic.ini
+!src/
