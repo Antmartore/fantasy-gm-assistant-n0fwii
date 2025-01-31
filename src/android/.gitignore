@@ -1,0 +1,105 @@
+# Build artifacts and directories
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+build/
+.gradle/
+app/build/
+captures/
+buck-out/
+.buck/
+*.hprof
+.cxx/
+
+# IDE and editor files
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+
+# Security sensitive files
+local.properties
+keystore.properties
+signing.properties
+debug.keystore
+release.keystore
+*.jks
+*.keystore
+google-services.json
+firebase/*.json
+crashlytics.properties
+fabric.properties
+crashlytics-build.properties
+com_crashlytics_export_strings.xml
+
+# React Native specific
+node_modules/
+npm-debug.log
+yarn-error.log
+.bundle/
+vendor/
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/assets/index.android.bundle.meta
+
+# Logs and temporary files
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+temp/
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+# External native build folder
+.externalNativeBuild/
+
+# NDK
+obj/
+
+# Proguard
+proguard/
+
+# Gradle wrapper
+!gradle-wrapper.jar
+
+# Local configuration
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+
+# Generated files
+generated/
+intermediates/
+
+# Version control
+.svn/
+.git/
+
+# Backup files
+*~
+*.bak
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# Code coverage
+jacoco.exec
+coverage/
