@@ -1,0 +1,102 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0'
+        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.gradle:gradle-enterprise-gradle-plugin:3.12.3'
+    }
+}
+
+plugins {
+    id 'com.gradle.enterprise' version '3.12.3'
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+        maven { url "$rootDir/../node_modules/react-native/android" }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            failOnVersionConflict()
+            preferProjectModules()
+            cacheDynamicVersionsFor 0, 'seconds'
+            cacheChangingModulesFor 0, 'seconds'
+            force 'com.facebook.react:react-native:0.72.0'
+            force 'com.google.firebase:firebase-analytics:21.3.0'
+            force 'com.google.firebase:firebase-auth:22.1.0'
+            force 'com.google.firebase:firebase-messaging:23.2.0'
+            force 'com.google.firebase:firebase-core:21.1.1'
+            force 'com.google.firebase:firebase-crashlytics:18.4.0'
+            force 'androidx.core:core-ktx:1.10.0'
+            force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+            force 'com.google.android.material:material:1.9.0'
+            force 'com.datadog:dd-sdk-android:1.15.0'
+            force 'androidx.security:security-crypto:1.1.0'
+            force 'com.squareup.retrofit2:retrofit:2.9.0'
+            force 'com.squareup.retrofit2:converter-gson:2.9.0'
+            force 'com.google.code.gson:gson:2.10.1'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+            force 'com.facebook.soloader:soloader:0.10.5'
+        }
+    }
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+    allprojects {
+        delete project.buildDir
+    }
+}
+
+gradle.projectsLoaded {
+    allprojects {
+        buildscript {
+            configurations.classpath {
+                resolutionStrategy.setForcedModules(
+                    'com.android.tools.build:gradle:8.0.0',
+                    'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0',
+                    'com.google.gms:google-services:4.3.15'
+                )
+            }
+        }
+    }
+}
+
+gradle.beforeSettings {
+    enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
+    enableFeaturePreview('STABLE_CONFIGURATION_CACHE')
+}
+
+gradle.settingsEvaluated {
+    settings.dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+        repositories {
+            mavenCentral()
+            google()
+        }
+    }
+}
+
+gradle.projectsEvaluated {
+    allprojects {
+        tasks.withType(JavaCompile).configureEach {
+            options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+        }
+    }
+}
