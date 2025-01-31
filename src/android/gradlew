@@ -1,0 +1,126 @@
+#!/usr/bin/env sh
+
+# Gradle wrapper script for Fantasy GM Assistant Android build
+# Version: 1.0
+# Requires: Java 1.8+, Unix-like environment
+# Enhanced with CI/CD support and robust error handling
+
+# Fail on any error
+set -e
+
+# Timestamp function for logging
+timestamp() {
+    date "+%Y-%m-%d %H:%M:%S"
+}
+
+# Enhanced error handling function
+die() {
+    echo "$(timestamp) [ERROR] Build context: Fantasy GM Assistant Android" >&2
+    echo "$(timestamp) [ERROR] $1" >&2
+    exit ${2:-1}
+}
+
+# Java version validation
+check_java_version() {
+    if ! command -v java >/dev/null 2>&1; then
+        die "Java is not installed or not in PATH" 2
+    fi
+    
+    java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1-2)
+    if [ -z "$java_version" ]; then
+        die "Could not determine Java version" 3
+    fi
+    
+    # Convert versions to comparable numbers
+    required_version=$(echo "$MIN_JAVA_VERSION" | cut -d'.' -f2)
+    current_version=$(echo "$java_version" | cut -d'.' -f2)
+    
+    if [ "$current_version" -lt "$required_version" ]; then
+        die "Java version $MIN_JAVA_VERSION or higher is required (found $java_version)" 4
+    fi
+}
+
+# Environment setup with enhanced validation
+setup_environment() {
+    # Resolve APP_HOME with symlink support
+    PRG="$0"
+    while [ -h "$PRG" ]; do
+        ls=$(ls -ld "$PRG")
+        link=$(expr "$ls" : '.*-> \(.*\)$')
+        if expr "$link" : '/.*' > /dev/null; then
+            PRG="$link"
+        else
+            PRG=$(dirname "$PRG")/"$link"
+        fi
+    done
+    
+    APP_HOME=$(cd "$(dirname "$PRG")" > /dev/null && pwd)
+    
+    # Validate required wrapper files
+    if [ ! -f "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" ]; then
+        die "Gradle wrapper JAR not found at $APP_HOME/gradle/wrapper/gradle-wrapper.jar" 5
+    fi
+    
+    if [ ! -f "$APP_HOME/gradle/wrapper/gradle-wrapper.properties" ]; then
+        die "Gradle wrapper properties not found at $APP_HOME/gradle/wrapper/gradle-wrapper.properties" 6
+    fi
+    
+    # Set JAVA_HOME if not already set
+    if [ -z "$JAVA_HOME" ]; then
+        if [ -x "/usr/libexec/java_home" ]; then
+            export JAVA_HOME=$(/usr/libexec/java_home)
+        else
+            die "JAVA_HOME is not set and could not be detected" 7
+        fi
+    fi
+    
+    # Configure JVM options for optimal build performance
+    DEFAULT_JVM_OPTS='"-Xmx2048m" "-Xms512m" "-XX:MaxMetaspaceSize=512m" "-XX:+HeapDumpOnOutOfMemoryError"'
+    
+    # Set up class path
+    CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+    
+    # Configure Gradle options for optimal performance
+    GRADLE_OPTS='"-Dorg.gradle.daemon=true" "-Dorg.gradle.parallel=true" "-Dorg.gradle.caching=true"'
+    
+    # CI/CD environment detection and configuration
+    if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ] || [ -n "$GITLAB_CI" ] || [ -n "$JENKINS_URL" ]; then
+        echo "$(timestamp) [INFO] CI environment detected, optimizing build configuration"
+        GRADLE_OPTS="$GRADLE_OPTS -Dorg.gradle.daemon=false"
+    fi
+}
+
+# Main execution with enhanced error handling
+main() {
+    # Initialize environment
+    setup_environment
+    
+    # Validate Java installation
+    check_java_version
+    
+    # Execute Gradle
+    exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS \
+        -classpath "$CLASSPATH" \
+        org.gradle.wrapper.GradleWrapperMain "$@"
+}
+
+# Set minimum Java version
+MIN_JAVA_VERSION="1.8"
+
+# Detect Java command
+if [ -n "$JAVA_HOME" ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+        JAVACMD="$JAVA_HOME/jre/sh/java"
+    else
+        JAVACMD="$JAVA_HOME/bin/java"
+    fi
+    if [ ! -x "$JAVACMD" ] ; then
+        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME" 8
+    fi
+else
+    JAVACMD="java"
+    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and java command not found in PATH" 9
+fi
+
+# Execute main function with all arguments
+main "$@"
