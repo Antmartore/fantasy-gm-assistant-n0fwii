@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background layer using the primary brand color -->
+    <item android:drawable="@color/colorPrimary" />
+
+    <!-- Center logo container with responsive dimensions -->
+    <item>
+        <shape android:shape="rectangle">
+            <size
+                android:width="120dp"
+                android:height="120dp" />
+            <solid android:color="@color/colorTransparent" />
+        </shape>
+    </item>
+
+    <!-- Logo placeholder with theme-aware coloring -->
+    <item
+        android:width="80dp"
+        android:height="80dp"
+        android:gravity="center">
+        <vector
+            android:width="80dp"
+            android:height="80dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="@color/colorSecondary"
+                android:pathData="M12,2L2,7L12,12L22,7L12,2Z M2,17L12,22L22,17L12,12L2,17Z" />
+        </vector>
+    </item>
+</layer-list>
