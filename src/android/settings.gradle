@@ -1,0 +1,58 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "$rootDir/../node_modules/react-native/android"
+            // React Native version: 0.72.0
+            content {
+                includeGroup "com.facebook.react"
+            }
+        }
+        maven {
+            url "https://www.jitpack.io"
+            content {
+                includeGroupByRegex "com\\.github.*"
+            }
+        }
+    }
+}
+
+rootProject.name = "FantasyGMAssistant"
+include ':app'
+
+// Enable build scan for debugging and performance monitoring
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
+// Configure repository connection timeouts and security
+gradle.projectsLoaded {
+    allprojects {
+        repositories.all {
+            if (it instanceof MavenArtifactRepository) {
+                it.metadataSources {
+                    mavenPom()
+                    artifact()
+                }
+                it.mavenContent {
+                    releasesOnly()
+                }
+                it.setConnectTimeout(Duration.ofMinutes(3))
+                it.setReadTimeout(Duration.ofMinutes(3))
+            }
+        }
+    }
+}
