@@ -1,0 +1,30 @@
+[Binary PNG file with the following specifications]
+
+Image Specifications:
+- Resolution: 192x192 pixels
+- Format: PNG
+- Color Depth: 32-bit
+- Color Profile: sRGB
+- Density: xxxhdpi (640dpi)
+- Compression: Lossless PNG compression
+- Interlacing: Disabled
+- Transparency: Supported
+
+Design Requirements:
+- Primary Color: #1A1A1A (Dark base)
+- Secondary Color: #00FF88 (Neon brand elements)
+- Accent Color: #4A90E2 (Secondary brand elements)
+- Safe Zone: 2dp padding from edges
+- Background: Gradient from ic_launcher_background.xml
+- Foreground: Material Design adaptive icon compatible
+- Enhanced contrast optimization for xxxhdpi displays
+- Material Design icon guidelines compliance
+
+Technical Requirements:
+- Optimized for 640dpi Android devices
+- Adaptive icon compatible
+- Lossless compression
+- No interlacing
+- sRGB color profile
+- 32-bit color depth
+- Clear edge rendering at xxxhdpi density
