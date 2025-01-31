@@ -1,0 +1,191 @@
+name: Android CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: '17'
+  GRADLE_VERSION: '8.0'
+  ANDROID_SDK: '33'
+  MIN_TEST_COVERAGE: '80'
+  MAX_VULNERABILITIES: '0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/android/.gradle
+            ~/android/build
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      
+      - name: Decode google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $GOOGLE_SERVICES_JSON > android/app/google-services.json
+      
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug
+      
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+      
+      - name: Run Instrumentation Tests
+        run: ./gradlew connectedDebugAndroidTest
+      
+      - name: Generate Coverage Report
+        run: ./gradlew jacocoTestReport
+      
+      - name: Verify Coverage Threshold
+        run: |
+          COVERAGE=$(./gradlew jacocoTestCoverageVerification)
+          if [[ $COVERAGE < $MIN_TEST_COVERAGE ]]; then
+            echo "Test coverage below threshold of $MIN_TEST_COVERAGE%"
+            exit 1
+          fi
+      
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: android/app/build/reports/tests
+      
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: android/app/build/reports/jacoco
+
+  security-scan:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Snyk Security Scan
+        uses: snyk/actions/gradle@v3
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+      
+      - name: Run OWASP Dependency Check
+        run: ./gradlew dependencyCheckAnalyze
+      
+      - name: Verify Vulnerability Threshold
+        run: |
+          VULNERABILITIES=$(./gradlew dependencyCheckAnalyze | grep "High" | wc -l)
+          if [[ $VULNERABILITIES > $MAX_VULNERABILITIES ]]; then
+            echo "Found $VULNERABILITIES high severity vulnerabilities"
+            exit 1
+          fi
+      
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: android/app/build/reports/dependency-check
+
+  release:
+    needs: security-scan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo $KEYSTORE_BASE64 | base64 -d > android/app/keystore.jks
+      
+      - name: Build Release APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+      
+      - name: Build Release Bundle
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+      
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: android/app/build/outputs/apk/release/app-release.apk
+      
+      - name: Upload Release Bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release-bundle
+          path: android/app/build/outputs/bundle/release/app-release.aab
+      
+      - name: Create Release Tag
+        run: |
+          VERSION=$(./gradlew -q printVersionName)
+          git tag v$VERSION
+          git push origin v$VERSION
