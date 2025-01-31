@@ -1,0 +1,31 @@
+# Image Properties:
+# - Resolution: 72x72dp (hdpi density)
+# - Format: PNG with optimization
+# - Color Space: sRGB
+# - Transparency: Supported
+
+# Background Gradient:
+# - Type: Linear
+# - Angle: 45 degrees
+# - Colors: 
+#   1. #1A1A1A (Dark)
+#   2. #00FF88 (Neon)
+#   3. #4A90E2 (Accent)
+
+# Adaptive Icon Support:
+# - Foreground: Center crop
+# - Background: 1.5x scale
+# - Safe Zone: Inner 33%
+
+# Accessibility Requirements:
+# - Minimum Contrast Ratio: 4.5:1
+# - Distinct Silhouette Required
+# - Touch Target: 48dp
+
+# Platform Requirements:
+# - Android API 26+
+# - Adaptive Icon Support
+# - Legacy Support
+
+# Note: This is a binary PNG file that should be created using 
+# image editing software according to these specifications.
