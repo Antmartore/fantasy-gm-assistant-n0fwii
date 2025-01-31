@@ -1,0 +1,108 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": {
+      "collections": [
+        {
+          "collection": "teams",
+          "fields": [
+            {
+              "field": "userId",
+              "order": "ASCENDING"
+            },
+            {
+              "field": "createdAt",
+              "order": "DESCENDING"
+            }
+          ]
+        },
+        {
+          "collection": "trades",
+          "fields": [
+            {
+              "field": "fromUserId",
+              "order": "ASCENDING"
+            },
+            {
+              "field": "status",
+              "order": "ASCENDING"
+            },
+            {
+              "field": "createdAt",
+              "order": "DESCENDING"
+            }
+          ]
+        },
+        {
+          "collection": "simulations",
+          "fields": [
+            {
+              "field": "userId",
+              "order": "ASCENDING"
+            },
+            {
+              "field": "teamId",
+              "order": "ASCENDING"
+            },
+            {
+              "field": "createdAt",
+              "order": "DESCENDING"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      }
+    ]
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
+  }
+}
