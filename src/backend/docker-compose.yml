@@ -1,0 +1,163 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: fantasy-gm-api:latest
+    container_name: fantasy-gm-api
+    command: gunicorn main:app --bind 0.0.0.0:8000 --workers 4 --worker-class uvicorn.workers.UvicornWorker
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app:ro
+      - api_logs:/var/log/api
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+    env_file:
+      - .env
+      - .env.production
+    depends_on:
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    networks:
+      - app_network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: fantasy-gm-worker:latest
+    container_name: fantasy-gm-worker
+    command: celery -A app.workers.celery_app worker --loglevel=info
+    volumes:
+      - ./:/app:ro
+      - worker_logs:/var/log/worker
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+    env_file:
+      - .env
+      - .env.production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    networks:
+      - app_network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: fantasy-gm-redis
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.2'
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - app_network
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: fantasy-gm-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+    networks:
+      - app_network
+
+  grafana:
+    image: grafana/grafana:9.5.0
+    container_name: fantasy-gm-grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - app_network
+
+volumes:
+  redis_data:
+    name: fantasy-gm-redis-data
+  api_logs:
+    name: fantasy-gm-api-logs
+  worker_logs:
+    name: fantasy-gm-worker-logs
+  prometheus_data:
+    name: fantasy-gm-prometheus-data
+  grafana_data:
+    name: fantasy-gm-grafana-data
+
+networks:
+  app_network:
+    driver: bridge
+    internal: true
+    enable_ipv6: false
+    driver_opts:
+      encrypted: "true"
