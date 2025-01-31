@@ -1,0 +1,306 @@
+# fastlane 2.217.0
+# cocoapods-core 1.12.0
+# datadog-ci 1.0.0
+# sentry-cli 2.0.0
+
+# Import required configurations
+import "./Appfile"
+import "./Matchfile"
+
+# Global constants
+WORKSPACE = "FantasyGMAssistant.xcworkspace"
+SCHEME = "FantasyGMAssistant"
+BUILD_NUMBER = ENV['BUILD_NUMBER']
+DATADOG_API_KEY = ENV['DATADOG_API_KEY']
+SENTRY_DSN = ENV['SENTRY_DSN']
+MATCH_PASSWORD = ENV['MATCH_PASSWORD']
+FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD = ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD']
+
+# Global error handler
+error_handler do |exception|
+  # Send error to Sentry
+  sentry_cli(
+    dsn: SENTRY_DSN,
+    org_slug: "fantasy-gm",
+    project_slug: "ios-app",
+    message: exception.message,
+    level: "error"
+  )
+
+  # Log to DataDog
+  datadog_ci(
+    api_key: DATADOG_API_KEY,
+    event_type: "build_error",
+    error: exception.message,
+    stacktrace: exception.backtrace.join("\n")
+  )
+
+  # Notify team via Slack
+  slack(
+    message: "Build Error: #{exception.message}",
+    success: false,
+    payload: { "Error Details" => exception.backtrace.first }
+  )
+
+  # Clean up
+  clean_build_artifacts
+  clear_derived_data
+
+  # Re-raise the error
+  raise exception
+end
+
+platform :ios do
+  before_all do
+    # Verify required environment variables
+    ensure_env_vars(
+      env_vars: [
+        'APPLE_ID',
+        'APPLE_TEAM_ID',
+        'MATCH_PASSWORD',
+        'MATCH_GIT_URL',
+        'DATADOG_API_KEY',
+        'SENTRY_DSN'
+      ]
+    )
+
+    # Setup monitoring
+    setup_ci if is_ci
+    
+    # Initialize cocoapods
+    cocoapods(
+      clean_install: true,
+      repo_update: true
+    )
+
+    # Setup code signing
+    setup_signing
+  end
+
+  desc "Build development version"
+  lane :build_development do
+    # Set environment
+    ENV["APP_ENVIRONMENT"] = "development"
+
+    # Setup certificates
+    match(
+      type: "development",
+      readonly: true,
+      force_for_new_devices: true
+    )
+
+    # Increment build number
+    increment_build_number(
+      build_number: BUILD_NUMBER,
+      xcodeproj: "FantasyGMAssistant.xcodeproj"
+    )
+
+    # Build app
+    gym(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: "Debug",
+      export_method: "development",
+      clean: true,
+      include_symbols: true,
+      include_bitcode: false,
+      export_options: {
+        compileBitcode: false,
+        uploadSymbols: true
+      }
+    )
+
+    # Upload debug symbols
+    upload_symbols_to_crashlytics
+    upload_symbols_to_sentry
+
+    # Send metrics
+    datadog_ci(
+      api_key: DATADOG_API_KEY,
+      event_type: "build_success",
+      environment: "development"
+    )
+  end
+
+  desc "Build staging version"
+  lane :build_staging do
+    # Set environment
+    ENV["APP_ENVIRONMENT"] = "staging"
+
+    # Setup certificates
+    match(
+      type: "appstore",
+      readonly: true
+    )
+
+    # Run tests
+    scan(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      clean: true,
+      code_coverage: true
+    )
+
+    # Increment build number
+    increment_build_number(
+      build_number: BUILD_NUMBER,
+      xcodeproj: "FantasyGMAssistant.xcodeproj"
+    )
+
+    # Build app
+    gym(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store",
+      clean: true,
+      include_symbols: true,
+      include_bitcode: true
+    )
+
+    # Upload to TestFlight
+    pilot(
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+      notify_external_testers: false
+    )
+
+    # Upload symbols
+    upload_symbols_to_crashlytics
+    upload_symbols_to_sentry
+
+    # Send metrics
+    datadog_ci(
+      api_key: DATADOG_API_KEY,
+      event_type: "build_success",
+      environment: "staging"
+    )
+  end
+
+  desc "Build production version"
+  lane :build_production do
+    # Set environment
+    ENV["APP_ENVIRONMENT"] = "production"
+
+    # Verify production certificates
+    match(
+      type: "appstore",
+      readonly: true,
+      force: true
+    )
+
+    # Security audit
+    security_audit
+
+    # Run full test suite
+    scan(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      clean: true,
+      code_coverage: true,
+      fail_build: true
+    )
+
+    # Increment build number
+    increment_build_number(
+      build_number: BUILD_NUMBER,
+      xcodeproj: "FantasyGMAssistant.xcodeproj"
+    )
+
+    # Generate release notes
+    changelog = read_changelog(
+      changelog_path: './CHANGELOG.md',
+      section_identifier: "[#{BUILD_NUMBER}]"
+    )
+
+    # Build app
+    gym(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store",
+      clean: true,
+      include_symbols: true,
+      include_bitcode: true,
+      export_options: {
+        compileBitcode: true,
+        uploadSymbols: true,
+        stripSwiftSymbols: true
+      }
+    )
+
+    # Upload to App Store
+    deliver(
+      submit_for_review: true,
+      force: true,
+      skip_metadata: false,
+      skip_screenshots: true,
+      skip_binary_upload: false,
+      automatic_release: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false
+      }
+    )
+
+    # Upload symbols
+    upload_symbols_to_crashlytics
+    upload_symbols_to_sentry
+
+    # Create git tag
+    add_git_tag(
+      tag: "v#{BUILD_NUMBER}",
+      message: "Production release v#{BUILD_NUMBER}"
+    )
+
+    # Send metrics
+    datadog_ci(
+      api_key: DATADOG_API_KEY,
+      event_type: "build_success",
+      environment: "production",
+      version: BUILD_NUMBER
+    )
+
+    # Generate audit report
+    generate_audit_report
+  end
+
+  private_lane :setup_signing do
+    # Setup code signing identity
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "FantasyGMAssistant.xcodeproj"
+    )
+  end
+
+  private_lane :security_audit do
+    # Run security checks
+    Dir.chdir("..") do
+      sh("security find-identity -v -p codesigning")
+      sh("security cms -D -i *.mobileprovision")
+    end
+  end
+
+  private_lane :upload_symbols_to_sentry do
+    sentry_upload_dsym(
+      auth_token: ENV['SENTRY_AUTH_TOKEN'],
+      org_slug: 'fantasy-gm',
+      project_slug: 'ios-app',
+      dsym_path: lane_context[SharedValues::DSYM_OUTPUT_PATH]
+    )
+  end
+
+  private_lane :generate_audit_report do
+    # Generate build audit report
+    audit_report = {
+      build_number: BUILD_NUMBER,
+      timestamp: Time.now.iso8601,
+      git_branch: git_branch,
+      git_commit: last_git_commit,
+      environment: ENV["APP_ENVIRONMENT"]
+    }
+
+    # Save audit report
+    File.write("build_audit_#{BUILD_NUMBER}.json", audit_report.to_json)
+  end
+end
