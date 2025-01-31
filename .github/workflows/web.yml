@@ -1,0 +1,233 @@
+name: Web CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths: ['src/web/**']
+  pull_request:
+    branches: [main, develop]
+    paths: ['src/web/**']
+
+env:
+  NODE_VERSION: '18.x'
+  YARN_CACHE: 'yarn-cache-v1'
+  COVERAGE_THRESHOLD: '80'
+  MAX_RETRIES: '3'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+          yarn cache clean
+
+      - name: Type check
+        run: yarn type-check
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build application
+        run: |
+          yarn build:android
+          yarn build:ios
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            *.ipa
+            *.apk
+          retention-days: 5
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run unit tests
+        run: yarn test:coverage
+        env:
+          CI: true
+
+      - name: Run integration tests
+        run: yarn test:integration
+        env:
+          CI: true
+
+      - name: Verify coverage threshold
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if (( $(echo "$COVERAGE < ${{ env.COVERAGE_THRESHOLD }}" | bc -l) )); then
+            echo "Test coverage ($COVERAGE%) is below threshold (${{ env.COVERAGE_THRESHOLD }}%)"
+            exit 1
+          fi
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: coverage/
+          retention-days: 5
+
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@v1
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run dependency scan
+        run: snyk test --severity-threshold=high
+
+      - name: Run container scan
+        run: snyk container test --severity-threshold=high
+
+      - name: Run SAST analysis
+        run: snyk code test --severity-threshold=high
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: snyk-reports/
+          retention-days: 5
+
+  quality:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run code quality analysis
+        run: |
+          yarn lint
+          yarn type-check
+          
+      - name: Analyze bundle size
+        run: yarn build --analyze
+
+      - name: Upload quality metrics
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-metrics
+          path: |
+            .eslintcache
+            tsconfig.tsbuildinfo
+            bundle-analysis.html
+          retention-days: 5
+
+  deploy:
+    needs: [quality]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://app.fantasygm.com
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag ${{ secrets.ECR_REGISTRY }}/fantasy-gm-web:${{ github.sha }} \
+            --push \
+            .
+
+      - name: Deploy with blue-green strategy
+        run: |
+          aws ecs update-service \
+            --cluster fantasy-gm-prod \
+            --service web-service \
+            --task-definition web-task:${{ github.sha }} \
+            --force-new-deployment
+
+      - name: Run smoke tests
+        run: |
+          for i in {1..${{ env.MAX_RETRIES }}}; do
+            if curl -f https://app.fantasygm.com/health; then
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+
+      - name: Monitor deployment health
+        run: |
+          aws cloudwatch get-metric-statistics \
+            --namespace AWS/ECS \
+            --metric-name CPUUtilization \
+            --dimensions Name=ServiceName,Value=web-service \
+            --start-time $(date -u -v-5M '+%Y-%m-%dT%H:%M:%SZ') \
+            --end-time $(date -u '+%Y-%m-%dT%H:%M:%SZ') \
+            --period 60 \
+            --statistics Average
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          aws ecs update-service \
+            --cluster fantasy-gm-prod \
+            --service web-service \
+            --task-definition web-task:${{ github.event.before }} \
+            --force-new-deployment
