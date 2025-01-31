@@ -1,0 +1,98 @@
+# yarn lockfile v1
+
+"@reduxjs/toolkit@^1.9.5":
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.5.tgz"
+  integrity sha512-Rt97jHmfTeaxL4RzW7wK+YeE0LmXKF5PbKhF5ZxHwZl5y5ZzL5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L==
+  dependencies:
+    immer "^9.0.21"
+    redux "^4.2.1"
+    redux-thunk "^2.4.2"
+    reselect "^4.1.8"
+
+"expo@49.0.0":
+  version "49.0.0"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-49.0.0.tgz"
+  integrity sha512-p7G4zX4qL4y5M8+2xL6+hZ5L4V4y5j5L5y5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L5L==
+  dependencies:
+    "@expo/vector-icons" "^13.0.0"
+    "@expo/voiceover" "~0.1.0"
+    "@unimodules/core" "~7.1.1"
+    expo-asset "~8.10.0"
+    expo-constants "~14.4.0"
+    expo-file-system "~15.4.0"
+    expo-font "~11.4.0"
+    expo-keep-awake "~12.3.0"
+
+"react-native@0.72.6":
+  version "0.72.6"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.72.6.tgz"
+  integrity sha512-0bBQP8xtWVf8dG9v/yU5qk3R/KxO3uJ9OaJmw2Z+7oxjEyqP4zJ5YXj02g4QdCEpzqQnUB6pGjSI5uGVzZpIvw==
+  dependencies:
+    "@react-native/assets" "1.0.0"
+    "@react-native/normalize-color" "2.1.0"
+    "@react-native-community/cli" "^11.3.7"
+    "@react-native-community/cli-platform-android" "^11.3.7"
+    "@react-native-community/cli-platform-ios" "^11.3.7"
+    abort-controller "^3.0.0"
+    anser "^1.4.9"
+    base64-js "^1.5.1"
+    event-target-shim "^5.0.1"
+    invariant "^2.2.4"
+    jsc-android "^250231.0.0"
+    metro-react-native-babel-transformer "0.76.7"
+    metro-runtime "0.76.7"
+    metro-source-map "0.76.7"
+    nullthrows "^1.1.1"
+    pretty-format "^26.6.2"
+    promise "^8.3.0"
+    react-devtools-core "^4.25.0"
+    react-native-codegen "^0.71.5"
+    react-native-gradle-plugin "^0.71.19"
+    react-refresh "^0.4.0"
+    react-shallow-renderer "16.15.0"
+    regenerator-runtime "^0.13.2"
+    scheduler "^0.23.0"
+    stacktrace-parser "^0.1.10"
+    use-sync-external-store "^1.2.0"
+    whatwg-fetch "^3.0.0"
+    ws "^6.2.2"
+
+"react@18.2.0":
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz"
+  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
+  dependencies:
+    loose-envify "^1.1.0"
+
+# Additional core dependencies
+"@babel/core@^7.20.0":
+  version "7.22.9"
+  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.22.9.tgz"
+  integrity sha512-vA+RxkNfK8xz1GhxvjZvC0p6Nh+8J1kgXuQoU6DTY3/qvWxO6Sr/cNjP9fEF5ELLSBJb5HZVhB8gGTBYuBHxA==
+
+"@types/react@^18.0.0":
+  version "18.2.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.15.tgz"
+  integrity sha512-oEjE7vZ5gPVx1zZ1QX1rQTp7YQj5gqN+RQ/wQQKVEZMHxZ6PhJ0jZBZYqz6VBxoVELQQJNwTHWLZZKtQRq6Zw==
+
+"typescript@^5.0.0":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.1.6.tgz"
+  integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
+
+# Development dependencies
+"@testing-library/react-native@^12.1.2":
+  version "12.1.2" 
+  resolved "https://registry.yarnpkg.com/@testing-library/react-native/-/react-native-12.1.2.tgz"
+  integrity sha512-0jX7k0ZvB5NzR5L9IxXWy9+Eu6RyZx9LC5ZX3MOGpUh1dL0wKbPXkLGOeZwQ8wK0yF5Wd9JXhFz/qD0vU+ZqQ==
+
+"jest@^29.2.1":
+  version "29.6.2"
+  resolved "https://registry.yarnpkg.com/jest/-/jest-29.6.2.tgz"
+  integrity sha512-8eJGPY7FQj7NMc8GY5cMZHHqxKhzxqA9HGYY5dqNmX8EZqZhJyTuZJzwecPxnmKGN1IXGi9KnCPaKufiMPGaA==
+
+"eslint@^8.19.0":
+  version "8.45.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.45.0.tgz"
+  integrity sha512-pd8KSxiQpdYRfYa9Wufvdoct3ZPQQuVuH4G1gH9QjfJqZmrHzH0I+XALz0wXxzxwvFj8BhpZVNhHwvk+UxP2pQ==
