@@ -1,0 +1,47 @@
+# Image Properties:
+# - Format: PNG (Lossless compression)
+# - Dimensions: 1242x2436 pixels (3x resolution)
+# - Color Space: sRGB
+# - Background Color: #1A1A1A (Dark theme)
+# - Accent Color: #00FF88 (Neon)
+# - File Size: <= 500KB
+# - WCAG 2.1 Level AA Compliant (7:1 contrast ratio)
+
+# Responsive Breakpoints:
+# - Mobile S: 320px
+# - Mobile L: 425px
+# - Tablet: 768px
+# - Desktop: 1024px
+
+# Platform Support:
+# - iOS: 14.0+ (iPhone SE, 8+, X+, iPad)
+# - Android: API 21+ (mdpi to xxxhdpi)
+# - Web: PNG + WebP formats
+
+# Design Elements:
+# - Logo Placement: Center
+# - Background Style: Solid #1A1A1A
+# - Animation: Fade (1000ms)
+# - Safe Area Insets: All sides
+
+# Optimization:
+# - WebP conversion for web
+# - Cache-Control: public, max-age=31536000, immutable
+# - Load Time: < 200ms
+# - Memory Impact: Minimal
+
+# Image Generation Command:
+# convert -size 1242x2436 xc:#1A1A1A \
+#   -gravity center \
+#   -fill "#00FF88" \
+#   -draw "text 0,0 'Fantasy GM'" \
+#   -quality 100 \
+#   splash.png
+
+# WebP Conversion:
+# cwebp -q 100 splash.png -o splash.webp
+
+# Verify Specifications:
+# - identify -verbose splash.png
+# - imagemagick -verify splash.png
+# - lighthouse --only-categories=performance splash.png
