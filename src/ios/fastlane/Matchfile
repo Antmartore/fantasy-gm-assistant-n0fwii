@@ -1,0 +1,67 @@
+# fastlane 2.217.0
+
+# Git URL for certificate storage - must be set in environment variable
+git_url(ENV['MATCH_GIT_URL'])
+
+# Use git storage mode for certificates and provisioning profiles
+storage_mode("git")
+
+# Environment-specific certificate types
+type(ENV['APP_ENVIRONMENT'] == 'development' ? "development" : "appstore")
+
+# App identifiers for different environments
+app_identifier([
+  "com.fantasygm.assistant.dev",     # Development
+  "com.fantasygm.assistant.staging", # Staging
+  "com.fantasygm.assistant"          # Production
+])
+
+# Apple ID from environment variable
+username(ENV['APPLE_ID'])
+
+# Team ID from environment variable
+team_id(ENV['APPLE_TEAM_ID'])
+
+# Git branch for certificate storage
+git_branch("main")
+
+# Enable readonly mode for enhanced security
+readonly(true)
+
+# Certificate rotation period in days
+certificate_rotation(90)
+
+# Notification service for certificate expiry alerts
+notification_service(ENV['NOTIFICATION_SERVICE'])
+
+# Security settings
+force_for_new_devices(true)
+skip_confirmation(true)
+skip_docs(true)
+platform("ios")
+
+# Backup settings
+backup_enabled(true)
+backup_frequency("daily")
+
+# Advanced security configurations
+shallow_clone(true)
+clone_branch_directly(true)
+generate_apple_certs(true)
+
+# Monitoring and analytics
+verbose(true)
+api_key_path(ENV['APPLE_API_KEY_PATH'])
+
+# Emergency procedures
+include_all_certificates(true)
+include_enterprise_certificates(false)
+
+# Certificate template configurations
+template_name("Fantasy GM Assistant")
+profile_types(["development", "appstore"])
+
+# Additional security measures
+fail_on_name_taken(true)
+skip_provisioning_profiles(false)
+require_2fa(true)
