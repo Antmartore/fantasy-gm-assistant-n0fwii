@@ -1,0 +1,75 @@
+# fastlane 2.217.0
+
+# Environment-specific app identifiers
+def app_identifier
+  case ENV['APP_ENVIRONMENT']
+  when 'development'
+    'com.fantasygm.assistant.dev'
+  when 'staging'
+    'com.fantasygm.assistant.staging'
+  when 'production'
+    'com.fantasygm.assistant'
+  else
+    raise "Invalid APP_ENVIRONMENT: #{ENV['APP_ENVIRONMENT']}"
+  end
+end
+
+# Secure Apple ID reference from environment variable
+def apple_id
+  ENV['APPLE_ID'] || raise('Missing APPLE_ID environment variable')
+end
+
+# Apple Developer Team ID from environment variable
+def team_id
+  ENV['APPLE_TEAM_ID'] || raise('Missing APPLE_TEAM_ID environment variable')
+end
+
+# App Store Connect Team ID from environment variable (only needed for production)
+def itc_team_id
+  return nil unless ENV['APP_ENVIRONMENT'] == 'production'
+  ENV['APP_STORE_TEAM_ID'] || raise('Missing APP_STORE_TEAM_ID environment variable for production')
+end
+
+# Certificate management configuration
+def certificate_config
+  {
+    development: {
+      auto_renewal: true,
+      expiry_threshold_days: 30,
+      backup_enabled: true
+    },
+    staging: {
+      auto_renewal: true,
+      expiry_threshold_days: 30,
+      backup_enabled: true
+    },
+    production: {
+      auto_renewal: true,
+      expiry_threshold_days: 45,
+      backup_enabled: true,
+      notification_enabled: true
+    }
+  }[ENV['APP_ENVIRONMENT']&.to_sym] || raise("Invalid environment for certificate config")
+end
+
+# Security configuration
+def security_config
+  {
+    certificate_storage: {
+      type: 'encrypted',
+      rotation_period_days: 90,
+      backup_location: 'secure_vault'
+    },
+    access_control: {
+      ci_cd_restricted: true,
+      manual_override_allowed: false,
+      audit_logging: true
+    }
+  }
+end
+
+# Export configurations for Fastlane
+app_identifier(app_identifier)
+apple_id(apple_id)
+team_id(team_id)
+itc_team_id(itc_team_id) if ENV['APP_ENVIRONMENT'] == 'production'
