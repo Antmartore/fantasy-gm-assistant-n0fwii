@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    function isPremiumUser() {
+      return request.auth != null && 
+             request.auth.token != null && 
+             request.auth.token.isPremium == true;
+    }
+
+    function isTeamOwner(teamId) {
+      let team = get(/databases/$(database)/documents/teams/$(teamId));
+      return team != null && team.data.userId == request.auth.uid;
+    }
+
+    function isValidTradeParticipant(tradeId) {
+      let trade = get(/databases/$(database)/documents/trades/$(tradeId));
+      return trade != null && 
+             (trade.data.fromUserId == request.auth.uid || 
+              trade.data.toUserId == request.auth.uid);
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && request.auth.uid == userId;
+      
+      match /{document=**} {
+        allow read: if isSignedIn() && request.auth.uid == userId;
+      }
+
+      function isValidUser() {
+        let user = request.resource.data;
+        return user.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+               user.isPremium is bool &&
+               user.createdAt is timestamp &&
+               user.lastLogin is timestamp &&
+               user.preferences is map;
+      }
+    }
+
+    // Teams collection
+    match /teams/{teamId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && 
+                      request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && 
+                             resource.data.userId == request.auth.uid;
+
+      function isValidTeam() {
+        let team = request.resource.data;
+        return team.userId is string &&
+               team.name.size() >= 3 && 
+               team.name.size() <= 50 &&
+               team.platform in ['ESPN', 'Sleeper'] &&
+               team.sport in ['NFL', 'NBA', 'MLB'] &&
+               team.settings is map;
+      }
+    }
+
+    // Trades collection
+    match /trades/{tradeId} {
+      allow read: if isSignedIn() && isValidTradeParticipant(tradeId);
+      allow create: if isSignedIn() && 
+                      (request.resource.data.fromUserId == request.auth.uid || 
+                       request.resource.data.toUserId == request.auth.uid);
+      allow update: if isSignedIn() && isValidTradeParticipant(tradeId);
+
+      function isValidTrade() {
+        let trade = request.resource.data;
+        return trade.fromUserId is string &&
+               trade.toUserId is string &&
+               trade.status in ['pending', 'accepted', 'rejected'] &&
+               trade.players is list &&
+               trade.players.size() > 0 &&
+               trade.createdAt is timestamp;
+      }
+    }
+
+    // Simulations collection
+    match /simulations/{simulationId} {
+      allow read: if isSignedIn() && 
+                    request.auth.uid == resource.data.userId;
+      allow create: if isSignedIn() && 
+                      request.auth.uid == request.resource.data.userId &&
+                      (isPremiumUser() || 
+                       request.resource.data.simulationCount < 3);
+      allow update: if isSignedIn() && 
+                      request.auth.uid == resource.data.userId;
+
+      function isValidSimulation() {
+        let sim = request.resource.data;
+        return sim.userId is string &&
+               sim.teamId is string &&
+               sim.parameters is map &&
+               sim.results is map &&
+               sim.simulationCount is number;
+      }
+    }
+
+    // Lineups collection
+    match /lineups/{lineupId} {
+      allow read: if isSignedIn() && 
+                    isTeamOwner(resource.data.teamId);
+      allow write: if isSignedIn() && 
+                     isTeamOwner(request.resource.data.teamId);
+
+      function isValidLineup() {
+        let lineup = request.resource.data;
+        return lineup.teamId is string &&
+               lineup.week is number &&
+               lineup.players is list &&
+               lineup.lastUpdated is timestamp &&
+               lineup.optimizationCount is number &&
+               (isPremiumUser() || lineup.optimizationCount <= 3);
+      }
+    }
+
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
