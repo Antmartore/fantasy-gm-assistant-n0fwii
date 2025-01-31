@@ -1,0 +1,103 @@
+{
+  "cli": {
+    "version": ">= 5.9.1",
+    "requireCommit": true,
+    "promptToConfigurePushNotifications": true,
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "resourceClass": "m-medium",
+        "cocoapods": "1.15.2",
+        "buildConfiguration": "Debug"
+      },
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleDebug",
+        "resourceClass": "medium",
+        "enableProguardInReleaseBuilds": false
+      },
+      "env": {
+        "APP_ENV": "development",
+        "ENABLE_DEBUG_TOOLS": "true"
+      },
+      "cache": {
+        "key": "development-v1"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium",
+        "cocoapods": "1.15.2",
+        "buildConfiguration": "Release",
+        "enableBitcode": false
+      },
+      "android": {
+        "buildType": "apk",
+        "resourceClass": "medium",
+        "gradleCommand": ":app:assembleRelease",
+        "enableProguardInReleaseBuilds": true
+      },
+      "env": {
+        "APP_ENV": "staging",
+        "API_URL": "https://staging-api.fantasygm.com"
+      },
+      "channel": "staging",
+      "cache": {
+        "key": "preview-v1"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": {
+        "resourceClass": "m-large",
+        "cocoapods": "1.15.2",
+        "image": "latest",
+        "buildConfiguration": "Release",
+        "enableBitcode": false,
+        "compileBitcode": false,
+        "enableAutomaticSigning": false
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "image": "latest",
+        "gradleCommand": ":app:bundleRelease",
+        "resourceClass": "large",
+        "enableProguardInReleaseBuilds": true,
+        "enableHermes": true,
+        "enableShrinkResources": true
+      },
+      "env": {
+        "APP_ENV": "production",
+        "API_URL": "https://api.fantasygm.com",
+        "ENABLE_PERFORMANCE_MONITORING": "true"
+      },
+      "channel": "production",
+      "cache": {
+        "key": "production-v1"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "your-apple-id",
+        "ascAppId": "your-app-store-id",
+        "appleTeamId": "your-team-id",
+        "language": "en-US",
+        "complianceLevel": "STRICT"
+      },
+      "android": {
+        "track": "production",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": false,
+        "applicationId": "com.fantasygm.app"
+      }
+    }
+  }
+}
