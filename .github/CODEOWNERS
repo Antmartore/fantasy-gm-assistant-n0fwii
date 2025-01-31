@@ -1,0 +1,45 @@
+# Fantasy GM Assistant CODEOWNERS
+# Automatically assigns reviewers for pull requests based on file paths
+# Format: file_pattern @owner1 @owner2
+
+# Default owners for unmatched files
+* @project-leads
+
+# Backend service ownership
+src/backend/** @backend-team @devops-team
+src/backend/app/core/** @backend-team @security-team
+src/backend/app/services/** @backend-team @integration-team
+src/backend/app/ml/training/** @ml-team @backend-team
+src/backend/app/ml/inference/** @ml-team @backend-team
+
+# Mobile application ownership
+src/mobile/** @mobile-team
+src/ios/** @ios-team @mobile-team
+src/android/** @android-team @mobile-team
+
+# Infrastructure and deployment
+infrastructure/** @devops-team @security-team
+.github/workflows/** @devops-team
+
+# Security-critical components requiring multiple reviews
+src/backend/app/core/security/** @security-team
+src/backend/app/core/auth/** @security-team @backend-team
+infrastructure/aws/iam/** @security-team @devops-team
+**/secrets/** @security-team
+src/backend/app/core/data/** @security-team @backend-team
+**/Dockerfile @devops-team @security-team
+
+# Documentation ownership
+docs/api/** @backend-team @integration-team
+docs/architecture/** @project-leads @devops-team
+
+# Review requirements for security-critical paths
+# These paths require 2 approving reviews
+src/backend/app/core/security/**  @security-team
+src/backend/app/core/auth/**      @security-team @backend-team
+infrastructure/aws/iam/**         @security-team @devops-team
+**/secrets/**                     @security-team
+src/backend/app/core/data/**      @security-team @backend-team
+
+# Container security configurations
+**/Dockerfile                     @devops-team @security-team
