@@ -1,0 +1,227 @@
+name: iOS Build & Deploy
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Deployment Environment'
+        required: true
+        options:
+          - development
+          - staging
+          - production
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly certificate rotation
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app
+  WORKSPACE: FantasyGMAssistant.xcworkspace
+  SCHEME: FantasyGMAssistant
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: macos-latest
+    timeout-minutes: 15
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.value }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Generate Cache Key
+        id: cache-key
+        run: |
+          echo "value=${{ hashFiles('**/Podfile.lock', '**/package-lock.json', '**/Gemfile.lock') }}" >> $GITHUB_OUTPUT
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            Pods
+            node_modules
+            vendor/bundle
+          key: ${{ runner.os }}-deps-${{ steps.cache-key.outputs.value }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
+          npm ci
+          pod install
+
+  test:
+    name: Run Tests
+    needs: setup
+    runs-on: macos-latest
+    timeout-minutes: 30
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+        with:
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Initialize Monitoring
+        uses: datadog/action@v1
+        with:
+          api_key: ${{ secrets.DATADOG_API_KEY }}
+          environment: test
+
+      - name: Run Tests
+        run: |
+          bundle exec fastlane test
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: fastlane/test_output
+
+      - name: Report to Sentry
+        uses: getsentry/action@v1
+        with:
+          auth_token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          environment: test
+
+  build:
+    name: Build & Deploy
+    needs: [setup, test]
+    runs-on: macos-latest
+    timeout-minutes: 45
+    environment: ${{ github.event.inputs.environment || 'development' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+        with:
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Initialize Monitoring
+        uses: datadog/action@v1
+        with:
+          api_key: ${{ secrets.DATADOG_API_KEY }}
+          environment: ${{ github.event.inputs.environment || 'development' }}
+
+      - name: Setup Code Signing
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+        run: |
+          bundle exec fastlane match development
+          bundle exec fastlane match appstore
+
+      - name: Build Development
+        if: github.event.inputs.environment == 'development' || github.ref == 'refs/heads/develop'
+        run: bundle exec fastlane build_development
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+
+      - name: Build Staging
+        if: github.event.inputs.environment == 'staging'
+        run: bundle exec fastlane build_staging
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+
+      - name: Build Production
+        if: github.event.inputs.environment == 'production' && github.ref == 'refs/heads/main'
+        run: bundle exec fastlane build_production
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: |
+            fastlane/build
+            fastlane/README.md
+            build_audit_*.json
+
+      - name: Notify Slack
+        if: always()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"iOS Build ${{ github.event.inputs.environment || 'development' }}: ${{ job.status }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  rotate-certificates:
+    name: Rotate Certificates
+    needs: [build]
+    runs-on: macos-latest
+    if: github.event_name == 'schedule'
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+        with:
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Rotate Certificates
+        run: bundle exec fastlane refresh_certificates
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
