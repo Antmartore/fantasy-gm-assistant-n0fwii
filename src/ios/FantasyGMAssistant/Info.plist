@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Core App Information -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleDisplayName</key>
+    <string>Fantasy GM Assistant</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+
+    <!-- Device Capabilities -->
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>armv7</string>
+        <string>arm64</string>
+    </array>
+
+    <!-- Supported Platforms and Versions -->
+    <key>MinimumOSVersion</key>
+    <string>14.0</string>
+
+    <!-- Orientation Support -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+
+    <!-- Background Modes -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+        <string>processing</string>
+        <string>audio</string>
+    </array>
+
+    <!-- Privacy Permissions -->
+    <key>NSCameraUsageDescription</key>
+    <string>Fantasy GM Assistant uses your camera to scan and analyze player cards, game tickets, and enable augmented reality features for enhanced game analysis</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Access to your photo library allows you to upload and analyze player cards, game tickets, and share your fantasy sports achievements</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is used to provide real-time stadium information, weather updates, and game-specific insights for optimal team management</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Microphone access enables voice commands for quick team management and AI-powered audio analysis for game insights</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>FaceID provides secure authentication for protecting your fantasy sports account and sensitive team management features</string>
+
+    <!-- App Transport Security -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>api.fantasygm.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <true/>
+                <key>NSExceptionMinimumTLSVersion</key>
+                <string>TLSv1.3</string>
+                <key>NSRequiresCertificateTransparency</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+
+    <!-- Security Settings -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>UIRequiresPersistentWiFi</key>
+    <true/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>googlegmail</string>
+        <string>twitter</string>
+        <string>fb</string>
+        <string>espn</string>
+        <string>sleeper</string>
+        <string>sportradar</string>
+    </array>
+
+    <!-- User Activity Types -->
+    <key>NSUserActivityTypes</key>
+    <array>
+        <string>com.fantasygm.assistant.teammanagement</string>
+        <string>com.fantasygm.assistant.tradeanalysis</string>
+        <string>com.fantasygm.assistant.lineupoptimization</string>
+    </array>
+
+    <!-- Firebase Configuration -->
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <true/>
+    <key>FirebaseAutomaticScreenReportingEnabled</key>
+    <true/>
+    <key>FirebaseMessagingAutoInitEnabled</key>
+    <true/>
+    <key>FirebaseAnalyticsEnabled</key>
+    <true/>
+    <key>FirebaseInAppMessagingAutomaticDataCollectionEnabled</key>
+    <true/>
+    <key>FirebasePerformanceEnabled</key>
+    <true/>
+    <key>FirebaseDynamicLinksCustomDomains</key>
+    <array>
+        <string>fantasygm.page.link</string>
+        <string>share.fantasygm.com</string>
+    </array>
+
+    <!-- URL Schemes -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.fantasygm.assistant</string>
+                <string>fb$(FACEBOOK_APP_ID)</string>
+                <string>$(REVERSED_CLIENT_ID)</string>
+                <string>fantasygm-oauth</string>
+                <string>fantasygm-deeplink</string>
+            </array>
+            <key>CFBundleURLName</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        </dict>
+    </array>
+</dict>
+</plist>
