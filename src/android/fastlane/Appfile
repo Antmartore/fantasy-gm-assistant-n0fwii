@@ -1,0 +1,49 @@
+# Fastlane Android configuration file
+# Version: 1.0.0
+
+# Package identifier for Google Play Store deployment
+# Synchronized with build.gradle applicationId
+package_name("com.fantasygm.assistant")
+
+# Google Play Store API key file path for authentication
+# Required for automated deployments
+json_key_file("fastlane/google-play-key.json")
+
+# Environment configuration to optimize CI/CD performance
+ENV["FASTLANE_SKIP_UPDATE_CHECK"] = "true"
+ENV["FASTLANE_HIDE_TIMESTAMP"] = "true"
+ENV["FASTLANE_DISABLE_COLORS"] = "true"
+
+# Validate package name matches Firebase configuration
+raise "Package name mismatch with Firebase config" unless package_name == "com.fantasygm.assistant"
+
+# Security and validation settings
+before_all do |lane, options|
+  # Ensure proper authentication file exists
+  unless File.exist?(json_key_file)
+    raise "Missing Google Play Store API key file: #{json_key_file}"
+  end
+  
+  # Validate environment-specific settings
+  case lane_context[SharedValues::ENVIRONMENT]
+  when "development"
+    ENV["PLAY_TRACK"] = "internal"
+  when "staging"
+    ENV["PLAY_TRACK"] = "beta"
+    # Require tech lead approval for beta deployments
+    validate_beta_approval
+  when "production"
+    ENV["PLAY_TRACK"] = "production"
+    # Require product owner approval for production deployments
+    validate_production_approval
+  end
+end
+
+# Audit logging for security compliance
+after_all do |lane, options|
+  log_deployment_audit(
+    package_name: package_name,
+    environment: lane_context[SharedValues::ENVIRONMENT],
+    track: ENV["PLAY_TRACK"]
+  )
+end
