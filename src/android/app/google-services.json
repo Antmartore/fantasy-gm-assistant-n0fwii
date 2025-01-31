@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "project_number_placeholder",
+    "project_id": "fantasy-gm-assistant",
+    "storage_bucket": "fantasy-gm-assistant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "mobilesdk_app_id_placeholder",
+        "android_client_info": {
+          "package_name": "com.fantasygm.assistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_type": 1,
+          "client_id": "client_id_placeholder_google",
+          "provider": "google.com",
+          "scopes": [
+            "profile",
+            "email"
+          ]
+        },
+        {
+          "client_type": 1,
+          "client_id": "client_id_placeholder_facebook",
+          "provider": "facebook.com",
+          "scopes": [
+            "public_profile",
+            "email"
+          ]
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "api_key_placeholder",
+          "restrictions": {
+            "android_package_name": "com.fantasygm.assistant",
+            "allowed_domains": [
+              "*.fantasygm.assistant.com"
+            ]
+          }
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1,
+          "analytics_property": {
+            "tracking_id": "tracking_id_placeholder",
+            "collection_enabled": true,
+            "user_property_enabled": true
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "auth_service": {
+          "status": 1,
+          "oauth2_client_id": "oauth2_client_id_placeholder",
+          "providers_enabled": [
+            "google.com",
+            "facebook.com",
+            "password"
+          ],
+          "mfa_enabled": true
+        },
+        "messaging_service": {
+          "status": 1,
+          "gcm_defaultSenderId": "gcm_sender_id_placeholder",
+          "notification_channel_id": "fantasy_gm_notifications"
+        },
+        "crashlytics_service": {
+          "status": 1,
+          "crash_collection_enabled": true,
+          "analytics_enabled": true
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
