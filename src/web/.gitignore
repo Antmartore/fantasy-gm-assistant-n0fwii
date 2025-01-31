@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+yarn.lock
+package-lock.json
+
+# Environment files - Keep sensitive data out of version control
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+!.env.example
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
+dist/
+*.ipa
+*.apk
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+__tests__/coverage/
+jest-test-results.json
+test-report.xml
+
+# Development
+.idea/
+.vscode/
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+
+# Build outputs and signing keys
+build/
+dist/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+*.keystore
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+debug.log
+
+# Metro bundler
+.metro-health-check*
+.metro-cache/
+
+# Local development
+local.properties
+*.local
+.env.local
+*.pem
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Platform specific
+ios/Pods/
+android/.gradle/
+android/app/build/
+android/build/
